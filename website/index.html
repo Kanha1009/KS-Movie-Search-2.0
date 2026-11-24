@@ -1,0 +1,532 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#03050a">
+<title>KS Movies</title>
+<style>
+/* =========================================================
+   KS MOVIES — EASY EDIT CONFIG
+   Common settings can be changed here.
+========================================================= */
+:root{
+  --site-max:1100px;
+  --mobile-card-width:138px;
+  --desktop-card-width:158px;
+  --section-gap:22px;
+  --ad-min-height:70px;
+}
+*{box-sizing:border-box}html,body{margin:0;background:#02050a;color:#fff;font-family:Arial,Helvetica,sans-serif}body{overflow-x:hidden}
+:root{--pink:#ff0b4f;--pink2:#ff315f;--panel:#07101a;--muted:#9ca8b7;--line:rgba(255,255,255,.09);--site-max:1100px;--desktop-card-width:158px;--mobile-card-width:140px;--ad-min-height:72px}
+.app{min-height:100vh;background:#02050a}
+.hero{position:relative;min-height:650px;padding:42px 16px 54px;display:flex;flex-direction:column;align-items:center;overflow:hidden;background:linear-gradient(180deg,rgba(0,0,0,.10),rgba(1,5,11,.16) 38%,rgba(2,5,10,.94) 100%),url('/assets/hero.png') center top/cover no-repeat}
+.hero:after{content:"";position:absolute;inset:auto 0 0;height:190px;background:linear-gradient(transparent,#02050a);pointer-events:none}
+.logo{position:relative;z-index:2;width:min(470px,86vw);height:auto;object-fit:contain;filter:drop-shadow(0 12px 25px rgba(0,0,0,.45));margin-top:6px}
+.search-area{position:relative;z-index:2;width:min(760px,94vw);margin-top:0;text-align:center}
+.search-title{font-size:clamp(30px,8vw,54px);margin:0 0 9px;font-weight:900;letter-spacing:-1px;text-shadow:0 5px 20px #000}.search-title span{color:var(--pink)}
+.sub{margin:0 auto 20px;color:#f2f4f7;font-size:14px;line-height:1.5;text-shadow:0 2px 10px #000}
+.search{height:64px;display:flex;align-items:center;padding:7px 8px 7px 18px;background:rgba(5,9,15,.86);border:1px solid rgba(255,36,91,.72);border-radius:18px;box-shadow:0 0 30px rgba(255,11,79,.18),inset 0 0 18px rgba(255,255,255,.025)}
+.search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#fff;font-size:16px}.search input::placeholder{color:#8f99a7}
+.search button{height:50px;border:0;border-radius:13px;background:linear-gradient(135deg,var(--pink),var(--pink2));color:#fff;font-weight:800;padding:0 22px;cursor:pointer;box-shadow:0 8px 20px rgba(255,11,79,.22)}.search button:disabled{opacity:.6}
+.search-results{position:relative;z-index:5;width:min(900px,94vw);margin:-20px auto 0;display:none}.search-results.show{display:block}
+.result-card{display:flex;gap:13px;padding:12px;background:rgba(7,16,26,.96);border:1px solid var(--line);border-radius:15px;margin:9px 0;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.result-poster{width:66px;height:94px;object-fit:cover;border-radius:9px;background:#121923;flex:none}.result-body{min-width:0;flex:1;text-align:left}.result-title{font-weight:800;font-size:15px;line-height:1.25}
+.meta{font-size:12px;color:var(--muted);margin-top:6px}.result-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btn{border:0;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block}.btn-pink{background:var(--pink);color:#fff}.btn-dark{background:#17212d;color:#fff;border:1px solid #293646}
+.content{max-width:1100px;margin:-5px auto 0;padding:0 16px 55px;position:relative;z-index:3}.section{margin:34px 0 0}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.section-head h2{font-size:24px;margin:0;font-weight:900}.section-head h2 span{color:var(--pink)}.section-head:before{content:"";width:4px;height:27px;background:var(--pink);border-radius:4px;margin-right:9px}.section-head h2{margin-right:auto}
+ .status{color:var(--muted);font-size:18px;margin:8px 0;display:flex;align-items:center;gap:10px;min-height:0}
+.status:empty{display:none}
+.status.loading::before{content:"";width:24px;height:24px;flex:0 0 24px;border:3px solid rgba(255,11,79,.25);border-top-color:var(--pink);border-radius:50%;animation:statusSpin .8s linear infinite}
+@keyframes statusSpin{to{transform:rotate(360deg)}}.row{display:flex;gap:14px;overflow-x:auto;padding:3px 1px 8px;scroll-snap-type:x proximity}.row::-webkit-scrollbar{height:5px}.row::-webkit-scrollbar-thumb{background:#283241;border-radius:20px}
+.card{flex:0 0 158px;scroll-snap-align:start}.poster{position:relative;width:100%;aspect-ratio:2/3;border-radius:12px;overflow:hidden;background:#101722;border:1px solid rgba(255,255,255,.06)}.poster img{width:100%;height:100%;object-fit:cover;display:block}.poster .fallback{height:100%;display:grid;place-items:center;padding:14px;text-align:center;color:#8e99a6;font-weight:800}
+.card-title{font-size:13px;font-weight:800;line-height:1.25;margin:8px 2px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-meta{font-size:11px;color:var(--muted);margin:0 2px}.card .get{width:100%;margin-top:8px;padding:9px;border:0;border-radius:9px;background:var(--pink);color:#fff;font-weight:800;font-size:12px;cursor:pointer}
+.empty{color:var(--muted);padding:20px 0;font-size:13px}.tmdb-note{font-size:10px;color:#697585;margin-top:15px;text-align:center}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:20;display:none;overflow:auto;padding:30px 14px}.modal.show{display:block}
+.modal-box{max-width:820px;margin:30px auto;background:#08111b;border:1px solid #253241;border-radius:18px;overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,.6)}
+.modal-back{height:240px;background:#101722 center/cover no-repeat;position:relative}.modal-back:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,#08111b)}
+.close{position:absolute;z-index:2;right:12px;top:12px;width:38px;height:38px;border-radius:50%;border:1px solid #526071;background:rgba(0,0,0,.6);color:#fff;font-size:21px;cursor:pointer}
+.modal-content{display:flex;gap:18px;padding:0 20px 22px;margin-top:-85px;position:relative;z-index:2}.modal-poster{width:150px;aspect-ratio:2/3;object-fit:cover;border-radius:12px;border:1px solid #2a3745;background:#101722;flex:none}
+.modal-info{min-width:0}.modal-info h2{margin:88px 0 7px;font-size:28px;line-height:1.1}.tags{display:flex;gap:6px;flex-wrap:wrap}.tag{font-size:11px;padding:5px 8px;border-radius:20px;background:#172331;color:#d7dee7;border:1px solid #273646}
+.overview{color:#b6c0cc;line-height:1.55;font-size:13px;margin:15px 0}.cast{font-size:12px;color:#8f9baa;line-height:1.5}.link-btn{display:block;text-align:center;margin-top:13px;background:var(--pink);color:#fff;padding:12px;border-radius:10px;text-decoration:none;font-weight:900}.credit{padding:0 20px 20px;color:#707d8c;font-size:10px}.credit a{color:#aeb9c7}
+
+/* =========================================================
+   CONTACT US — social buttons
+========================================================= */
+.contact-section{margin-top:34px;padding:24px 16px 26px;background:linear-gradient(180deg,rgba(12,18,30,.82),rgba(7,12,21,.96));border:1px solid rgba(255,255,255,.07);border-radius:20px;box-shadow:0 14px 45px rgba(0,0,0,.22)}
+.contact-title{text-align:center;font-size:28px;font-weight:900;margin:0 0 20px}.contact-title span{color:var(--pink)}
+.contact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:900px;margin:0 auto}
+.contact-btn{min-height:72px;border-radius:16px;background:#111b2c;border:1px solid rgba(255,255,255,.06);color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 14px;font-weight:800;font-size:15px;transition:transform .18s ease,background .18s ease,border-color .18s ease}
+.contact-btn:hover{transform:translateY(-2px);background:#17243a;border-color:rgba(255,11,79,.45)}
+.contact-icon{width:30px;height:30px;display:block;flex:none}.contact-icon svg{width:100%;height:100%;display:block}
+.contact-label{white-space:nowrap}.contact-empty{color:var(--muted);font-size:12px;text-align:center;margin-top:10px}
+@media(max-width:900px){
+  .contact-section{margin-top:18px;padding:14px 10px 16px;border-radius:14px}
+  .contact-title{font-size:21px;margin-bottom:12px}
+  .contact-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .contact-btn{min-height:50px;padding:8px 7px;font-size:12px;border-radius:12px;gap:7px}
+  .contact-icon{width:22px;height:22px}
+  .contact-btn:last-child{grid-column:1 / -1;max-width:46%;width:100%;justify-self:center}
+}
+
+@media(max-width:900px){.hero{min-height:610px;padding-top:28px}.search-area{margin-top:0}.search{height:58px}.search button{height:44px;padding:0 16px}.card{flex-basis:140px}.modal-content{padding:0 14px 18px;gap:12px}.modal-poster{width:112px}.modal-info h2{font-size:22px;margin-top:72px}.modal-back{height:205px}}
+
+/* =========================================================
+   01. MOBILE-FIRST / SPACING
+========================================================= */
+.content{max-width:var(--site-max);padding:0 14px 55px}
+.section{margin:var(--section-gap) 0 0}
+.hero{min-height:570px;padding-top:24px}
+.search-area{margin-top:0}
+.search-results{margin:-8px auto 0}
+
+/* =========================================================
+   02. VIEW ALL
+========================================================= */
+.section-head{margin-bottom:10px}
+.view-all{border:1px solid rgba(255,11,79,.55);background:rgba(255,11,79,.10);color:#fff;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;cursor:pointer}
+.view-all:hover{background:rgba(255,11,79,.20)}
+.all-panel{display:none;margin-top:14px;padding:12px;background:rgba(7,16,26,.96);border:1px solid var(--line);border-radius:15px}
+.all-panel.show{display:block}
+.all-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px 11px}
+.all-grid .card{min-width:0;width:100%;max-width:158px;margin:0 auto}
+.all-close{width:100%;margin-top:14px;padding:10px;border:1px solid #293646;border-radius:10px;background:#17212d;color:#fff;font-weight:800}
+
+/* =========================================================
+   03. POSTER LINKS
+========================================================= */
+.poster-link{display:block;width:100%;height:100%;color:inherit;text-decoration:none}
+.poster-link:focus-visible{outline:3px solid var(--pink);outline-offset:3px;border-radius:12px}
+.card{flex-basis:var(--desktop-card-width)}
+
+/* =========================================================
+   04. AUTOMATIC GENRES
+========================================================= */
+.genre-nav{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 10px;scrollbar-width:none}
+.genre-nav::-webkit-scrollbar{display:none}
+.genre-chip{flex:0 0 auto;border:1px solid #293646;background:#0c1621;color:#cbd4df;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer}
+.genre-chip.active,.genre-chip:hover{background:var(--pink);border-color:var(--pink);color:#fff}
+
+/* =========================================================
+   05. MONETIZATION — AD SLOTS
+   Paste your ad-network code inside the marked HTML block.
+========================================================= */
+.ad-slot{width:100%;min-height:var(--ad-min-height);margin:14px auto;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.025);border:1px dashed rgba(255,255,255,.12);border-radius:12px;color:#667383;font-size:10px;overflow:hidden}
+.ad-label{opacity:.65}
+
+/* =========================================================
+   06. SEPARATE SECTION PAGES
+========================================================= */
+.section-page{display:none;min-height:100vh;padding:18px 14px 50px;background:#02050a}
+.section-page.show{display:block}
+.home-shell.hidden{display:none}
+.page-head{max-width:1100px;margin:0 auto 18px;display:flex;align-items:center;gap:12px}
+.back-btn{border:1px solid #293646;background:#0c1621;color:#fff;border-radius:10px;padding:9px 12px;font-weight:800;cursor:pointer}
+.page-title{margin:0;font-size:24px;font-weight:900}.page-title span{color:var(--pink)}
+.page-status{max-width:1100px;margin:8px auto;color:var(--muted);font-size:13px}
+.page-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px 12px}
+.page-grid .card{width:100%;max-width:158px;margin:0 auto;min-width:0}
+.page-grid-more{display:flex;justify-content:center;margin:20px auto 0}
+.page-load{border:1px solid #293646;border-radius:10px;background:#17212d;color:#fff;padding:10px 18px;font-weight:800;cursor:pointer}
+@media(max-width:900px){
+  .section-page{padding:14px 10px 36px}
+  .page-head{margin-bottom:14px}
+  .page-title{font-size:20px}
+  .page-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 8px}
+  .page-grid .card{max-width:108px}
+}
+
+/* =========================================================
+   06. MOBILE
+========================================================= */
+@media(max-width:900px){
+  html,body,.app{width:100%;max-width:100%;min-width:0}
+  .hero,.content,.search-results{width:100%;max-width:100%}
+  .hero{min-height:0;padding:22px 12px 28px}
+  .logo{width:min(340px,82vw)}
+  .search-area{width:calc(100% - 24px);max-width:760px;margin-top:0}
+  .search-title{font-size:31px}
+  .sub{font-size:12px;margin-bottom:14px}
+  .search{height:54px;border-radius:15px;padding-left:13px}
+  .search input{font-size:14px}
+  .search button{height:42px;padding:0 14px;border-radius:11px}
+  .content{width:100%;max-width:100%;padding:0 12px 42px;margin-left:0;margin-right:0}
+  .section{margin-top:18px}
+  .section-head h2{font-size:20px}
+  .section-head:before{height:22px;width:3px}
+  .card{flex:0 0 var(--mobile-card-width);width:var(--mobile-card-width);max-width:var(--mobile-card-width)}
+  .row{gap:10px;padding-bottom:10px}
+  .card-title{font-size:12px}
+  .card-meta{font-size:10px}
+  .card .get{font-size:11px;padding:8px}
+  .all-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 8px}
+  .all-grid .card{width:100%;max-width:108px;margin:0 auto;flex:0 0 108px}
+  .all-grid .poster{width:100%;aspect-ratio:2/3;border-radius:9px}
+  .all-grid .card-title{font-size:11px;margin-top:6px}
+  .all-grid .card-meta{font-size:9px}
+  .all-grid .card .get{font-size:10px;padding:7px 4px;margin-top:6px;border-radius:8px}
+  .modal{padding:16px 8px}
+  .modal-box{margin:12px auto}
+}
+
+
+/* FIX: tighten the gap between New Updates posters and Ad Slot 2 only */
+#latest { padding-bottom: 0 !important; margin-bottom: 0 !important; }
+#latestStatus:empty { display: none !important; margin: 0 !important; padding: 0 !important; min-height: 0 !important; }
+#adLatest { margin-top: 0 !important; }
+@media (max-width:900px) {
+  #latest { padding-bottom: 0 !important; }
+}
+
+</style>
+</head>
+<body>
+<div id="homeShell" class="app home-shell">
+<section class="hero">
+  <img id="ksMoviesLogo" class="logo" src="/assets/logo.png" alt="KS Movies" title="Click to refresh page" style="cursor:pointer;pointer-events:auto;touch-action:manipulation">
+  <div class="search-area">
+    <h1 class="search-title">Search Any <span>Movie</span></h1>
+    <p class="sub">Find Latest Movies, Web Series, Dual Audio,<br>Hindi Dubbed &amp; More — Fast &amp; Easy</p>
+    <form class="search" id="searchForm"><input id="q" autocomplete="off" placeholder="Search for a movie, series..." aria-label="Search"><button id="searchBtn">Search</button></form>
+  </div>
+</section>
+<div id="searchResults" class="search-results"></div>
+<main class="content">
+
+  <!-- =====================================================
+       AD SLOT 1 — BELOW SEARCH
+       Paste ad-network code inside this block.
+  ====================================================== -->
+  <div id="adSearch" class="ad-slot" style="display:block;min-height:0;margin:8px auto;background:none;border:0;">
+    <!-- SLOT 1 — CHANGE ONLY href BELOW -->
+    <a href="https://whatsapp.com/channel/0029Vb9BUmr60eBmC9tCsj2Q" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;">
+      <img
+        src="./assets/WhatsApp_Update.png"
+        alt="WhatsApp_Update.png"
+        loading="lazy"
+        style="display:block;width:100%;height:auto;border-radius:10px;">
+    </a>
+  </div>
+
+  <!-- =====================================================
+       NEW UPDATES
+  ====================================================== -->
+  <section class="section">
+    <div class="section-head">
+      <h2>New <span>Updates</span></h2>
+      <button class="view-all" type="button" onclick="openSectionPage('latest')">View All</button>
+    </div>
+    <div id="latest" class="row"></div>
+    <div id="latestStatus" class="status loading">Loading latest movies...</div>
+  </section>
+
+  <!-- AD SLOT 2 -->
+  <div id="adLatest" class="ad-slot" style="display:block;min-height:0;margin:8px auto;background:none;border:0;">
+    <!-- SLOT 2 — CHANGE ONLY href BELOW -->
+    <a href="https://uplcm.com/4/11985198" target="_blank" rel="noopener noreferrer" style="display:block;width:100%;">
+      <video
+        src="/assets/ks_movies_free_money_banner.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        style="display:block;width:100%;height:auto;border-radius:10px;">
+      </video>
+    </a>
+  </div>
+
+  <!-- =====================================================
+       TRENDING TODAY
+       Backend data will contain Hollywood + Bollywood + South.
+  ====================================================== -->
+  <section class="section">
+    <div class="section-head"><h2>Trending <span>Today</span></h2><button class="view-all" type="button" onclick="openSectionPage('trending')">View All</button></div>
+    <div id="trending" class="row"></div>
+    <div id="trendingStatus" class="status loading">Loading trending movies...</div>
+  </section>
+
+  <!-- =====================================================
+       CONTACT US — change links only in SITE_CONFIG below
+  ====================================================== -->
+  <section id="contactSection" class="contact-section">
+    <h2 class="contact-title">Contact <span>Us</span></h2>
+    <div id="contactGrid" class="contact-grid"></div>
+    <div id="contactEmpty" class="contact-empty" style="display:none">Add your social links in SITE_CONFIG.</div>
+  </section>
+
+  <div class="tmdb-note">Movie information &amp; images powered by TMDB. Telegram links remain the source of truth.</div>
+</main></div>
+
+<!-- =====================================================
+     SEPARATE SECTION PAGE VIEW
+     Uses the same API/backend. Browser Back returns to Home.
+====================================================== -->
+<div id="sectionPage" class="section-page">
+  <div class="page-head">
+    <button class="back-btn" type="button" onclick="goHome()">← Back</button>
+    <h1 id="pageTitle" class="page-title"></h1>
+  </div>
+  <div id="pageStatus" class="page-status">Loading...</div>
+  <div id="pageGrid" class="page-grid"></div>
+  <div id="pageMore" class="page-grid-more"></div>
+</div>
+
+<div id="modal" class="modal" role="dialog" aria-modal="true"><div class="modal-box">
+  <div id="modalBack" class="modal-back"><button class="close" onclick="closeModal()">×</button></div>
+  <div class="modal-content"><img id="modalPoster" class="modal-poster" alt=""><div class="modal-info"><h2 id="modalTitle"></h2><div id="modalTags" class="tags"></div><p id="modalOverview" class="overview"></p><div id="modalCast" class="cast"></div><a id="modalLink" class="link-btn" target="_blank" rel="noopener noreferrer" style="display:none">🔗 Watch / Download</a></div></div>
+  <div class="credit">This product uses the TMDB API but is not endorsed or certified by TMDB. <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer">TMDB</a></div>
+</div></div>
+
+<script>
+/* =========================================================
+   EASY CONFIG — common changes are made here.
+========================================================= */
+const SITE_CONFIG={
+  latestPreview:10,
+  trendingPreview:10,
+  ads:{enabled:true,search:true,latest:true},
+
+  // =======================================================
+  // CONTACT / SOCIAL LINKS — ONLY CHANGE LINKS HERE
+  // =======================================================
+  contact:{
+    enabled:true,
+    telegram:'https://telegram.me/ksxplain12',
+    instagram:'https://instagram.com/YOUR_INSTAGRAM',
+    whatsapp:'https://whatsapp.com/channel/0029Vb9BUmr60eBmC9tCsj2Q'
+  }
+};
+
+
+const $=id=>document.getElementById(id);
+
+// Privacy-conscious analytics: aggregate event counts only; never send search text,
+// IPs, user IDs, or browser identifiers to the custom analytics endpoint.
+let gaMeasurementId='';
+let gaReady=false;
+function sendAnalyticsEvent(eventType, itemLabel=''){
+  const payload={event_type:eventType};
+  if(eventType==='movie_click' && itemLabel) payload.item_label=String(itemLabel).slice(0,100);
+  fetch('/api/analytics/event',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true}).catch(()=>{});
+  if(gaReady && typeof window.gtag==='function'){
+    if(eventType==='search') window.gtag('event','search');
+    else if(eventType==='movie_click') window.gtag('event','select_content',{content_type:'movie',item_id:String(itemLabel).slice(0,100)});
+  }
+}
+(async function initGA4(){
+  try{
+    const response=await fetch('/api/analytics/config');
+    const config=await response.json();
+    gaMeasurementId=(config.measurement_id||'').trim();
+    if(!/^G-[A-Z0-9]+$/.test(gaMeasurementId)) return;
+    window.dataLayer=window.dataLayer||[];
+    window.gtag=function(){dataLayer.push(arguments)};
+    window.gtag('js',new Date());
+    window.gtag('config',gaMeasurementId,{send_page_view:false});
+    const script=document.createElement('script');
+    script.async=true;
+    script.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(gaMeasurementId);
+    script.onload=()=>{gaReady=true};
+    document.head.appendChild(script);
+  }catch(_){}
+}
+)();
+document.addEventListener('click',event=>{
+  const link=event.target.closest('.result-card a[href], .poster-link[href], #modalLink[href]');
+  if(!link) return;
+  const card=link.closest('.result-card, .card');
+  const title=card?.querySelector('.result-title, .card-title')?.textContent
+    || $('modalTitle')?.textContent || link.getAttribute('aria-label') || 'Movie';
+  sendAnalyticsEvent('movie_click',title.trim());
+});
+
+function esc(s){const d=document.createElement('div');d.textContent=s??'';return d.innerHTML}
+function safeUrl(u){try{return new URL(u,location.href).href}catch{return '#'}}
+function posterHtml(p,title){return p?`<img src="${esc(p)}" alt="${esc(title)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="fallback" style="display:none">KS Movies</div>`:`<div class="fallback">KS Movies</div>`}
+function encodeInfo(x){return btoa(unescape(encodeURIComponent(JSON.stringify(x))))}
+function decodeInfo(x){return JSON.parse(decodeURIComponent(escape(atob(x))))}
+function cardHtml(item,link=true){
+  const t=item.tmdb||item;
+  const title=item.movie_name||t.title||'Unknown';
+  const year=t.year||'';
+  const rating=t.rating?`⭐ ${t.rating}`:'';
+  const target=item.target_url||item.telegram?.target_url||'';
+  const encoded=encodeInfo({tmdb:t,telegram:item});
+  const poster=posterHtml(t.poster,title);
+
+  const posterBlock=target
+    ? `<a class="poster-link" href="${esc(safeUrl(target))}" target="_blank" rel="noopener noreferrer" aria-label="Watch ${esc(title)}">${poster}</a>`
+    : `<button class="poster-link" type="button" data-info="${encoded}" style="padding:0;border:0;background:none;width:100%;text-align:left">${poster}</button>`;
+
+  return `<article class="card">
+    <div class="poster">${posterBlock}</div>
+    <div class="card-title" title="${esc(title)}">${esc(title)}</div>
+    <div class="card-meta">${esc(year)}${year&&rating?' • ':''}${esc(rating)}</div>
+    <button class="get" data-info="${encoded}">${link?'🔗 Get Links':'View Details'}</button>
+  </article>`;
+}
+function bindCards(root){
+  root.querySelectorAll('[data-info]').forEach(b=>b.onclick=()=>openModal(decodeInfo(b.dataset.info)));
+}
+function renderRows(items,root,link=true){
+  root.innerHTML=(items||[]).map(x=>cardHtml(x,link)).join('');
+  bindCards(root);
+}
+function renderAllGrid(items,root){
+  root.innerHTML=(items||[]).map(x=>cardHtml(x,true)).join('');
+  bindCards(root);
+}
+function setAdVisibility(){
+  const pairs=[
+    ['adSearch',SITE_CONFIG.ads.enabled&&SITE_CONFIG.ads.search],
+    ['adLatest',SITE_CONFIG.ads.enabled&&SITE_CONFIG.ads.latest],
+  ];
+  pairs.forEach(([id,show])=>{if($(id))$(id).style.display=show?'flex':'none'});
+}
+function openModal(info){
+ const t=info.tmdb||{};$('modalTitle').textContent=info.telegram?.movie_name||t.title||'Movie Details';$('modalPoster').src=t.poster||'';$('modalPoster').alt=$('modalTitle').textContent;$('modalBack').style.backgroundImage=t.backdrop?`url("${t.backdrop}")`:'none';$('modalOverview').textContent=t.overview||'Movie details are not available from TMDB.';$('modalCast').textContent=t.cast?.length?'Cast: '+t.cast.join(', '):'';
+ const tags=[];if(t.year)tags.push(t.year);if(t.rating)tags.push('⭐ '+t.rating);if(t.runtime)tags.push(t.runtime+' min');(t.genres||[]).slice(0,4).forEach(x=>tags.push(x));$('modalTags').innerHTML=tags.map(x=>`<span class="tag">${esc(x)}</span>`).join('');
+ const url=info.telegram?.target_url;$('modalLink').style.display=url?'block':'none';if(url)$('modalLink').href=safeUrl(url);$('modal').classList.add('show');document.body.style.overflow='hidden';
+}
+function closeModal(){$('modal').classList.remove('show');document.body.style.overflow=''}$('modal').onclick=e=>{if(e.target===$('modal'))closeModal()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+function renderContact(){
+  const cfg=SITE_CONFIG.contact||{};
+  const section=$('contactSection'),grid=$('contactGrid'),empty=$('contactEmpty');
+  if(!cfg.enabled){section.style.display='none';return}
+  const items=[
+    {key:'instagram',label:'Instagram',url:cfg.instagram,icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="igGrad" x1="0" y1="1" x2="1" y2="0"><stop offset="0"/><stop offset=".5"/><stop offset="1"/></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>'},
+    {key:'whatsapp',label:'WhatsApp',url:cfg.whatsapp,icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.5 3.5A11.8 11.8 0 0 0 2 17.7L.5 23.5l6-1.6A11.8 11.8 0 0 0 20.5 3.5ZM12 21a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.5.9.9-3.4-.2-.4A9.7 9.7 0 1 1 12 21Zm5.4-7.3c-.3-.2-1.7-.8-2-.9s-.5-.2-.7.2-.8.9-1 1.1-.4.2-.7.1a8 8 0 0 1-2.4-1.5 9 9 0 0 1-1.7-2.1c-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.4.3-.6s0-.4 0-.6-.7-1.6-1-2.2c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.2 1.2-1.2 2.8 1.2 3.2 1.4 3.4 2.4 3.7 5.9 5.1c.8.3 1.4.5 1.9.6.8.2 1.5.2 2.1.1.7-.1 1.7-.7 2-1.4s.3-1.3.2-1.4-.2-.2-.5-.4Z"/></svg>'},
+    {key:'telegram',label:'Telegram',url:cfg.telegram,icon:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m6.7 11.7 9.7-3.8c.45-.17.84.11.69.77l-1.65 7.77c-.12.55-.45.68-.91.43l-2.54-1.87-1.23 1.19c-.14.14-.25.25-.51.25l.18-2.58 4.7-4.25c.2-.18-.04-.28-.31-.1l-5.81 3.66-2.5-.78c-.54-.17-.55-.54.18-.82Z" fill="#07101a"/></svg>'}
+  ];
+  const valid=items.filter(x=>x.url && x.url!=='#');
+  grid.innerHTML=valid.map(x=>`<a class="contact-btn" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer" aria-label="Open ${x.label}"><span class="contact-icon">${x.icon}</span><span class="contact-label">${x.label}</span></a>`).join('');
+  empty.style.display=valid.length?'none':'block';
+}
+
+function goHome(){
+  if(history.state&&history.state.page){history.back();return;}
+  history.replaceState({},'',location.pathname);
+  showHome();
+}
+function showHome(){
+  $('homeShell').classList.remove('hidden');
+  $('sectionPage').classList.remove('show');
+  window.scrollTo({top:0,behavior:'auto'});
+  document.title='KS Movies';
+}
+function openSectionPage(type, genre=''){
+  const params=new URLSearchParams();
+  params.set('page',type);
+  if(genre)params.set('genre',genre);
+  history.pushState({page:type,genre},'',location.pathname+'?'+params.toString());
+  loadSectionPage(type,genre);
+}
+function pageTitle(type,genre){
+  if(type==='latest')return 'New <span>Updates</span>';
+  if(type==='trending')return 'Trending <span>Today</span>';
+  return 'KS <span>Movies</span>';
+}
+async function loadSectionPage(type,genre=''){
+  $('homeShell').classList.add('hidden');
+  $('sectionPage').classList.add('show');
+  $('pageTitle').innerHTML=pageTitle(type,genre);
+  $('pageGrid').innerHTML='';
+  $('pageMore').innerHTML='';
+  $('pageStatus').textContent='Loading...';
+  document.title=(type==='latest'?'New Updates':type==='trending'?'Trending Today':'Movie Genres')+' — KS Movies';
+
+  const endpoint=type==='latest'?'/api/latest?offset=0&limit=60':'/api/trending?limit=60';
+  try{
+    const r=await fetch(endpoint); const d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Section failed');
+    const results=d.results||d.movies||[];
+    renderPageGrid(results); $('pageStatus').textContent=results.length?'':`No ${type} movies found.`;
+    if(d.has_more) addPageLoadMore(type,results.length);
+  }catch(e){$('pageStatus').textContent='Unable to load movies.';console.error(e);}
+}
+function renderPageGrid(items){
+  const grid=$('pageGrid'); grid.innerHTML=(items||[]).map(x=>cardHtml(x,true)).join(''); bindCards(grid);
+}
+function addPageLoadMore(type,offset){
+  const btn=document.createElement('button');btn.className='page-load';btn.textContent='Load More';
+  btn.dataset.offset=String(offset);
+  btn.onclick=async()=>{
+    const currentOffset=Number(btn.dataset.offset||offset);
+    btn.disabled=true;btn.textContent='Loading...';
+    try{
+      const endpoint=type==='latest'?'/api/latest?offset='+currentOffset+'&limit=60':'/api/trending?offset='+currentOffset+'&limit=60';
+      const r=await fetch(endpoint);const d=await r.json();if(!r.ok)throw new Error(d.error||'Load failed');
+      const holder=document.createElement('div');holder.className='page-grid';renderPageGridInto(d.results||[],holder);
+      [...holder.children].forEach(c=>$('pageGrid').appendChild(c));
+      const added=(d.results||[]).length;
+      if(d.has_more && added){btn.dataset.offset=String(currentOffset+added);btn.disabled=false;btn.textContent='Load More';}
+      else btn.remove();
+    }catch(e){btn.disabled=false;btn.textContent='Load More';console.error(e)}
+  };
+  $('pageMore').appendChild(btn);
+}
+function renderPageGridInto(items,holder){holder.innerHTML=(items||[]).map(x=>cardHtml(x,true)).join('');bindCards(holder)}
+function handleRoute(){
+  const p=new URLSearchParams(location.search);const type=p.get('page');const genre=p.get('genre')||'';
+  if(type==='latest'||type==='trending')loadSectionPage(type,genre);else showHome();
+}
+window.addEventListener('popstate',handleRoute);
+
+async function loadHome(){
+  setAdVisibility();
+  try{
+    const r=await fetch('/api/home');
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Home failed');
+
+    const latest=d.latest||[];
+    const trending=d.trending||[];
+
+    if(latest.length){
+      renderRows(latest.slice(0,SITE_CONFIG.latestPreview),$('latest'),true);
+      $('latestStatus').classList.remove('loading');
+      $('latestStatus').textContent='';
+    }else {
+      $('latestStatus').classList.remove('loading');
+      $('latestStatus').textContent='No latest movies found.';
+    }
+
+    if(trending.length){
+      renderRows(trending.slice(0,SITE_CONFIG.trendingPreview),$('trending'),false);
+      $('trendingStatus').classList.remove('loading');
+      $('trendingStatus').textContent='';
+    }else{
+      $('trendingStatus').classList.remove('loading');
+      $('trendingStatus').textContent=d.tmdb_enabled
+        ? 'No trending movies found.'
+        : 'Add TMDB_API_KEY or TMDB_ACCESS_TOKEN in Koyeb to enable posters/details/trending.';
+    }
+  }catch(e){
+    $('latestStatus').classList.remove('loading');
+    $('trendingStatus').classList.remove('loading');
+    $('latestStatus').textContent='Unable to load latest movies.';
+    $('trendingStatus').textContent='Unable to load trending movies.';
+    console.error(e);
+  }
+}
+
+$('searchForm').onsubmit=async e=>{
+ e.preventDefault();const query=$('q').value.trim();if(!query)return;sendAnalyticsEvent('search');$('searchBtn').disabled=true;const box=$('searchResults');box.classList.add('show');box.innerHTML='<div class="result-card"><div class="result-body">⏳ Searching...</div></div>';
+ try{const r=await fetch('/api/search?q='+encodeURIComponent(query)+'&limit=20');const d=await r.json();if(!r.ok)throw new Error(d.error||'Search failed');
+ if(!d.results?.length){box.innerHTML='<div class="result-card"><div class="result-body">No Telegram DB results found.</div></div>';return}
+ box.innerHTML=d.results.map(x=>{const t=x.tmdb||{},title=x.movie_name||t.title,payload=encodeInfo({tmdb:t,telegram:x});const p=x.target_url?`<a href="${esc(safeUrl(x.target_url))}" target="_blank" rel="noopener noreferrer">`:'<span>';const pe=x.target_url?'</a>':'</span>';return `<div class="result-card"><div class="result-poster">${p}${t.poster?`<img src="${esc(t.poster)}" style="width:100%;height:100%;object-fit:cover;border-radius:9px" loading="lazy">`:'<div class="fallback">KS</div>'}${pe}</div><div class="result-body"><div class="result-title">${esc(title)}</div><div class="meta">${esc(x.movie_name)}${t.year?' • '+esc(t.year):''}${t.rating?' • ⭐ '+esc(t.rating):''}</div><div class="result-actions"><button class="btn btn-dark" data-info="${payload}">Details</button><a class="btn btn-pink" href="${esc(safeUrl(x.target_url))}" target="_blank" rel="noopener noreferrer">🔗 Watch / Download</a></div></div></div>`}).join('');
+ box.querySelectorAll('[data-info]').forEach(b=>b.onclick=()=>openModal(decodeInfo(b.dataset.info)));
+ }catch(e){box.innerHTML=`<div class="result-card"><div class="result-body">❌ ${esc(e.message)}</div></div>`}finally{$('searchBtn').disabled=false}};
+const ksMoviesLogo = document.getElementById('ksMoviesLogo');
+if (ksMoviesLogo) {
+  ksMoviesLogo.addEventListener('click', function (event) {
+    event.preventDefault();
+    window.location.reload();
+  }, { capture: true });
+}
+renderContact();
+if(new URLSearchParams(location.search).get('page')) handleRoute(); else loadHome();
+</script>
+</body></html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#03050a">
+<title>KS Movies — Admin Panel</title>
+<style>
+:root{--bg:#02050a;--panel:#07101a;--pink:#ff0b4f;--muted:#9ca8b7;--line:rgba(255,255,255,.1)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Arial,Helvetica,sans-serif;padding:20px}
+main{max-width:1000px;margin:auto}.head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.brand{font-size:24px;font-weight:900}.brand span{color:var(--pink)}.sub{color:var(--muted);font-size:13px;line-height:1.5}
+.panel,.metric{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:16px}
+label{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}input,select,button{border-radius:9px;border:1px solid var(--line);background:#101925;color:#fff;padding:11px;font:inherit}input{width:100%}button{background:var(--pink);border:0;font-weight:800;cursor:pointer}button:disabled{opacity:.6}.tabs{display:flex;gap:8px;margin-bottom:16px}.tab{background:#101925;border:1px solid var(--line)}.tab.active{background:var(--pink)}.tab.secondary{background:#101925}.updates-form{grid-template-columns:1fr auto auto}.movie-results{display:grid;gap:8px}.movie-result,.slot{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:12px;border:1px solid var(--line);border-radius:10px;background:#0b1520}.movie-name{font-weight:700}.movie-meta{color:var(--muted);font-size:12px;margin-top:4px}.slot-list{display:grid;gap:8px}.slot-left{display:flex;align-items:center;gap:10px;min-width:0}.slot-number{display:grid;place-items:center;width:34px;height:34px;flex-shrink:0;border-radius:8px;background:#172333;font-weight:900}.slot-actions{display:flex;gap:5px}.small-btn{padding:8px 10px;background:#172333;border:1px solid var(--line)}.danger{background:#47202a}.empty-slot{color:var(--muted);font-weight:400}
+.form{display:grid;grid-template-columns:1fr 150px auto;gap:10px;align-items:end}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.metric .label{font-size:12px;color:var(--muted)}.metric .value{font-size:30px;font-weight:900;margin-top:8px}.section-title{font-size:18px;font-weight:900;margin:0 0 12px}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line);font-size:13px}th{color:var(--muted);font-weight:700}.scroll{overflow-x:auto}.status{color:var(--muted);font-size:13px;margin-top:12px}.error{color:#ff7d9b}.foot{color:var(--muted);font-size:12px;line-height:1.5;margin-top:18px}
+@media(max-width:600px){body{padding:14px}.form{grid-template-columns:1fr 1fr}.form .token{grid-column:1/-1}.form button{grid-column:1/-1}.updates-form{grid-template-columns:1fr 1fr}.updates-form>div{grid-column:1/-1}.metrics{grid-template-columns:1fr 1fr}.metric{padding:13px}.metric .value{font-size:24px}th,td{white-space:nowrap}.movie-result{align-items:flex-start}.movie-result button{white-space:nowrap}}
+</style>
+</head>
+<body><main>
+<div class="head"><div><div class="brand">KS <span>Movies</span> Admin Panel</div><p class="sub">Website analytics, New Updates ordering, and custom movie thumbnails.</p></div><a href="/" style="color:#fff">← Website</a></div>
+<div class="panel"><div class="tabs"><button type="button" class="tab active" data-tab="analytics">Analytics</button><button type="button" class="tab secondary" data-tab="updates">Manage New Updates</button><button type="button" class="tab secondary" data-tab="posters">Manage Custom Thumbnails</button></div>
+  <div class="form">
+    <div class="token"><label for="token">Admin token (not saved)</label><input id="token" type="password" autocomplete="off" placeholder="Enter KS_ANALYTICS_ADMIN_TOKEN"></div>
+    <div><label for="days">Date range</label><select id="days"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option><option value="365">Last 365 days</option></select></div>
+    <button id="load">Load analytics</button>
+  </div>
+  <div id="status" class="status">Enter the admin token to view analytics or manage New Updates.</div>
+</div>
+<section id="analyticsTab">
+<div class="metrics">
+  <div class="metric"><div class="label">Total searches</div><div class="value" id="searches">—</div></div>
+  <div class="metric"><div class="label">Movie-link clicks</div><div class="value" id="clicks">—</div></div>
+</div>
+<div class="panel"><h2 class="section-title">Daily activity</h2><div class="scroll"><table><thead><tr><th>Date (UTC)</th><th>Searches</th><th>Movie clicks</th></tr></thead><tbody id="daily"><tr><td colspan="3">No data loaded.</td></tr></tbody></table></div></div>
+<div class="panel"><h2 class="section-title">Most-clicked movies</h2><div class="scroll"><table><thead><tr><th>Movie</th><th>Clicks</th></tr></thead><tbody id="popular"><tr><td colspan="2">No data loaded.</td></tr></tbody></table></div></div>
+<p class="foot">Privacy: this dashboard stores aggregate counts by day and movie title only. Search text, IP addresses, account IDs, and browser identifiers are not stored by the custom analytics system. GA4 is optional and only loads when GA4_MEASUREMENT_ID is configured.</p>
+</section>
+<section id="updatesTab" hidden>
+  <div class="panel"><h2 class="section-title">Manual New Updates</h2><p class="sub">Choose up to 5 movies. Saved selections appear first in this order; remaining movies continue in normal latest-first Telegram order. Leave all slots empty to use the original Telegram ordering.</p>
+    <div class="form updates-form"><div><label for="movieQuery">Search Telegram movie database</label><input id="movieQuery" type="search" placeholder="Type movie name..."></div><button id="movieSearch" type="button">Search movies</button><button id="saveSlots" type="button">Save order</button></div>
+    <div id="movieResults" class="movie-results status">Search for a movie to add it to your list.</div>
+    <h3 class="section-title" style="margin-top:22px">Selected order (maximum 5)</h3><div id="selectedSlots" class="slot-list"></div>
+    <div id="slotStatus" class="status">Enter the admin token above, then load saved selections.</div>
+  </div>
+</section>
+<section id="postersTab" hidden>
+  <div class="panel"><h2 class="section-title">Manage Custom Thumbnails</h2><p class="sub">Search a movie, paste a direct HTTPS image URL, preview it, then save. The custom image replaces TMDB's poster for that movie everywhere. Remove it to restore the original TMDB poster.</p>
+    <div class="form updates-form"><div><label for="posterQuery">Search Telegram movie database</label><input id="posterQuery" type="search" placeholder="Type movie name..."></div><button id="posterSearch" type="button">Search movies</button><button id="loadPosters" type="button">Refresh saved</button></div>
+    <div id="posterResults" class="movie-results status">Search for a movie to set its custom thumbnail.</div>
+    <h3 class="section-title" style="margin-top:22px">Saved custom thumbnails</h3><div id="savedPosters" class="slot-list"></div>
+    <div id="posterStatus" class="status">Enter the admin token above first.</div>
+  </div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>Number(n||0).toLocaleString();
+$('load').onclick=async()=>{
+  const token=$('token').value.trim();
+  if(!token){$('status').textContent='Enter the admin token first.';$('status').className='status error';return}
+  $('load').disabled=true;$('load').textContent='Loading...';
+  $('status').className='status';$('status').textContent='Loading analytics...';
+  try{
+    const r=await fetch('/api/admin/analytics?days='+encodeURIComponent($('days').value),{headers:{'X-Analytics-Admin-Token':token},cache:'no-store'});
+    const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load analytics.');
+    $('searches').textContent=fmt(d.searches);$('clicks').textContent=fmt(d.movie_clicks);
+    $('daily').innerHTML=(d.daily||[]).map(x=>`<tr><td>${x.date}</td><td>${fmt(x.searches)}</td><td>${fmt(x.movie_clicks)}</td></tr>`).join('')||'<tr><td colspan="3">No events recorded yet.</td></tr>';
+    $('popular').innerHTML=(d.popular_movies||[]).map(x=>`<tr><td>${String(x.title).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</td><td>${fmt(x.clicks)}</td></tr>`).join('')||'<tr><td colspan="2">No movie clicks recorded yet.</td></tr>';
+    $('status').textContent='Analytics loaded successfully.';$('status').className='status';
+  }catch(e){$('status').textContent=e.message;$('status').className='status error'}
+  finally{$('load').disabled=false;$('load').textContent='Load analytics'}
+};
+
+let selectedMovies=[];
+const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function adminToken(){return $('token').value.trim()}
+function setStatus(el,msg,error=false){el.textContent=msg;el.className='status'+(error?' error':'')}
+function renderSlots(){
+  const host=$('selectedSlots');
+  if(!selectedMovies.length){host.innerHTML='<div class="slot"><span class="empty-slot">No manual movies selected. Telegram ordering will apply.</span></div>';return}
+  host.innerHTML=selectedMovies.map((m,i)=>`<div class="slot"><div class="slot-left"><div class="slot-number">${i+1}</div><div style="min-width:0"><div class="movie-name">${esc(m.movie_name)}</div><div class="movie-meta">${esc(m.target_url)}</div></div></div><div class="slot-actions"><button class="small-btn" data-up="${i}" type="button" ${i===0?'disabled':''}>↑</button><button class="small-btn" data-down="${i}" type="button" ${i===selectedMovies.length-1?'disabled':''}>↓</button><button class="small-btn danger" data-remove="${i}" type="button">×</button></div></div>`).join('');
+  host.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.up;if(i>0){[selectedMovies[i-1],selectedMovies[i]]=[selectedMovies[i],selectedMovies[i-1]];renderSlots()}});
+  host.querySelectorAll('[data-down]').forEach(b=>b.onclick=()=>{const i=+b.dataset.down;if(i<selectedMovies.length-1){[selectedMovies[i+1],selectedMovies[i]]=[selectedMovies[i],selectedMovies[i+1]];renderSlots()}});
+  host.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{selectedMovies.splice(+b.dataset.remove,1);renderSlots()});
+}
+async function loadSlots(){
+  if(!adminToken()){setStatus($('slotStatus'),'Enter the admin token above first.',true);return}
+  try{const r=await fetch('/api/admin/new-updates',{headers:{'X-Analytics-Admin-Token':adminToken()},cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load slots');selectedMovies=d.slots||[];renderSlots();setStatus($('slotStatus'),'Saved movie selections loaded.')}
+  catch(e){setStatus($('slotStatus'),e.message,true)}
+}
+$('movieSearch').onclick=async()=>{
+  const q=$('movieQuery').value.trim();if(q.length<2){setStatus($('movieResults'),'Enter at least 2 characters.',true);return}
+  if(!adminToken()){setStatus($('movieResults'),'Enter the admin token above first.',true);return}
+  $('movieSearch').disabled=true;$('movieSearch').textContent='Searching...';setStatus($('movieResults'),'Searching Telegram database...');
+  try{const r=await fetch('/api/admin/new-updates/search?q='+encodeURIComponent(q),{headers:{'X-Analytics-Admin-Token':adminToken()},cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Search failed');const results=d.results||[];
+    if(!results.length){$('movieResults').innerHTML='No Telegram movie links found for this search.';return}
+    $('movieResults').innerHTML=results.map((m,i)=>`<div class="movie-result"><div style="min-width:0"><div class="movie-name">${esc(m.movie_name)}</div><div class="movie-meta">${esc(m.target_url)}</div></div><button type="button" data-add="${i}" ${selectedMovies.some(x=>x.target_url===m.target_url)||selectedMovies.length>=5?'disabled':''}>Add</button></div>`).join('');
+    $('movieResults').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const m=results[+b.dataset.add];if(!m||selectedMovies.length>=5||selectedMovies.some(x=>x.target_url===m.target_url))return;selectedMovies.push({movie_name:m.movie_name,target_url:m.target_url});renderSlots();b.disabled=true;b.textContent='Added';$('movieResults').querySelectorAll('[data-add]').forEach(x=>{if(selectedMovies.length>=5)x.disabled=true})});
+  }catch(e){setStatus($('movieResults'),e.message,true)}finally{$('movieSearch').disabled=false;$('movieSearch').textContent='Search movies'}
+};
+$('movieQuery').addEventListener('keydown',e=>{if(e.key==='Enter')$('movieSearch').click()});
+$('saveSlots').onclick=async()=>{
+  if(!adminToken()){setStatus($('slotStatus'),'Enter the admin token above first.',true);return}
+  $('saveSlots').disabled=true;$('saveSlots').textContent='Saving...';
+  try{const r=await fetch('/api/admin/new-updates',{method:'PUT',headers:{'Content-Type':'application/json','X-Analytics-Admin-Token':adminToken()},body:JSON.stringify({slots:selectedMovies}),cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Could not save');selectedMovies=d.slots||[];renderSlots();setStatus($('slotStatus'),selectedMovies.length?'Movie order saved to database.':'All slots cleared. Telegram ordering is active.');}
+  catch(e){setStatus($('slotStatus'),e.message,true)}finally{$('saveSlots').disabled=false;$('saveSlots').textContent='Save order'}
+};
+let savedPosters=[];
+function renderSavedPosters(){
+ const host=$('savedPosters');
+ if(!savedPosters.length){host.innerHTML='<div class="slot"><span class="empty-slot">No custom thumbnails saved. TMDB posters are being used.</span></div>';return}
+ host.innerHTML=savedPosters.map((p,i)=>`<div class="slot"><div class="slot-left"><img src="${esc(p.poster_url)}" alt="" style="width:44px;height:64px;object-fit:cover;border-radius:6px" onerror="this.style.opacity='.25'"><div style="min-width:0"><div class="movie-name">${esc(p.movie_name)}</div><div class="movie-meta" style="overflow-wrap:anywhere">${esc(p.poster_url)}</div></div></div><button class="small-btn danger" data-poster-remove="${i}" type="button">Remove</button></div>`).join('');
+ host.querySelectorAll('[data-poster-remove]').forEach(b=>b.onclick=async()=>{const p=savedPosters[+b.dataset.posterRemove];if(!p)return;if(!confirm('Remove custom thumbnail for '+p.movie_name+'? TMDB poster will be restored.'))return;await savePoster(p.movie_name,'');});
+}
+async function loadPosters(){
+ if(!adminToken()){setStatus($('posterStatus'),'Enter the admin token above first.',true);return}
+ try{const r=await fetch('/api/admin/custom-posters',{headers:{'X-Analytics-Admin-Token':adminToken()},cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load custom thumbnails');savedPosters=d.posters||[];renderSavedPosters();setStatus($('posterStatus'),'Saved custom thumbnails loaded.')}
+ catch(e){setStatus($('posterStatus'),e.message,true)}
+}
+async function savePoster(movieName,posterUrl){
+ if(!adminToken()){setStatus($('posterStatus'),'Enter the admin token above first.',true);return}
+ try{const r=await fetch('/api/admin/custom-posters',{method:'PUT',headers:{'Content-Type':'application/json','X-Analytics-Admin-Token':adminToken()},body:JSON.stringify({movie_name:movieName,poster_url:posterUrl}),cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Could not save thumbnail');setStatus($('posterStatus'),posterUrl?'Custom thumbnail saved. It will replace TMDB poster everywhere for this movie.':'Custom thumbnail removed; TMDB poster restored.');await loadPosters();}
+ catch(e){setStatus($('posterStatus'),e.message,true)}
+}
+$('posterSearch').onclick=async()=>{
+ const q=$('posterQuery').value.trim();if(q.length<2){setStatus($('posterResults'),'Enter at least 2 characters.',true);return}if(!adminToken()){setStatus($('posterResults'),'Enter the admin token above first.',true);return}
+ $('posterSearch').disabled=true;$('posterSearch').textContent='Searching...';setStatus($('posterResults'),'Searching Telegram database...');
+ try{const r=await fetch('/api/admin/new-updates/search?q='+encodeURIComponent(q),{headers:{'X-Analytics-Admin-Token':adminToken()},cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Search failed');const results=d.results||[];
+ if(!results.length){$('posterResults').innerHTML='No Telegram movie links found for this search.';return}
+ $('posterResults').innerHTML=results.map((m,i)=>{const current=savedPosters.find(p=>p.movie_key===String(m.movie_name||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim());const poster=(m.tmdb||{}).poster||'';return `<div class="movie-result" style="align-items:flex-start"><img src="${esc(poster)}" alt="" style="width:54px;height:78px;object-fit:cover;border-radius:6px;flex:none" onerror="this.style.display='none'"><div style="min-width:0;flex:1"><div class="movie-name">${esc(m.movie_name)}</div><div class="movie-meta">${esc(m.target_url)}</div><label style="margin-top:9px">Custom image URL (HTTPS)</label><input type="url" data-poster-url="${i}" value="${esc(current?.poster_url||'')}" placeholder="https://example.com/poster.jpg"><div data-preview="${i}" style="margin-top:8px"></div></div><button type="button" data-save-poster="${i}">Save</button></div>`}).join('');
+ results.forEach((m,i)=>{const input=$(`posterResults`).querySelector(`[data-poster-url="${i}"]`);const preview=$('posterResults').querySelector(`[data-preview="${i}"]`);const show=()=>{const u=input.value.trim();preview.innerHTML=u.startsWith('https://')?`<img src="${esc(u)}" alt="Preview" style="width:70px;height:100px;object-fit:cover;border-radius:7px" onerror="this.insertAdjacentHTML('afterend','<span class=movie-meta>Image failed to load</span>')">`:''};input.addEventListener('input',show);show()});
+ $('posterResults').querySelectorAll('[data-save-poster]').forEach(b=>b.onclick=async()=>{const i=+b.dataset.savePoster;const m=results[i];const input=$('posterResults').querySelector(`[data-poster-url="${i}"]`);b.disabled=true;await savePoster(m.movie_name,input.value.trim());b.disabled=false});
+ }catch(e){setStatus($('posterResults'),e.message,true)}finally{$('posterSearch').disabled=false;$('posterSearch').textContent='Search movies'}
+};
+$('posterQuery').addEventListener('keydown',e=>{if(e.key==='Enter')$('posterSearch').click()});$('loadPosters').onclick=loadPosters;
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('[data-tab]').forEach(x=>{x.classList.toggle('active',x===b);x.classList.toggle('secondary',x!==b)});
+  $('analyticsTab').hidden=b.dataset.tab!=='analytics';$('updatesTab').hidden=b.dataset.tab!=='updates';$('postersTab').hidden=b.dataset.tab!=='posters';
+  if(b.dataset.tab==='updates')loadSlots();if(b.dataset.tab==='posters')loadPosters();
+});
+</script></body></html>
